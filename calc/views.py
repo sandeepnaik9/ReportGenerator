@@ -141,8 +141,8 @@ def login_attempt(request):
         
         data['success'] = "user logged in successfylly"
         data['error'] = 'loggedin'
-        return redirect('/Profile')
-        return HttpResponse(json.dumps(data),content_type='application/json')
+        return redirect('https://sandeepitnaik-reportgenerator.zeet.app/Profile')
+        # return HttpResponse(json.dumps(data),content_type='application/json')
 
 def user_logout(request):
     if request.method == "POST":
