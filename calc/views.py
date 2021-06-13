@@ -144,8 +144,6 @@ def login_attempt(request):
         return redirect('profile')
         return HttpResponse(json.dumps(data),content_type='application/json')
 
-def profile(request):
-    return render(request,'profile.html')
 def user_logout(request):
     if request.method == "POST":
         logout(request)
