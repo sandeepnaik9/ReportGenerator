@@ -1732,7 +1732,7 @@
                             $("#verifysuccess").html(response['success']);
                         }
                         if (response["error"] == "loggedin") {
-                            location.window.href = "/Profile";
+                            window.location.href = '/Profile';
                         }
                     }
                 })
