@@ -141,6 +141,7 @@ def login_attempt(request):
         
         data['success'] = "user logged in successfylly"
         data['error'] = 'loggedin'
+        return redirect('profile')
         return HttpResponse(json.dumps(data),content_type='application/json')
 
 def profile(request):
