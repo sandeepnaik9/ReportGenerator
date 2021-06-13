@@ -165,6 +165,7 @@ def send_email_from_app(email,name,auth_token):
     email_msg.send(fail_silently=False)
 
 
+
 def verify_redirect(request):
     profile_obj = Profile.objects.filter(auth_token = val()).first()
     print(profile_obj.is_verified)
