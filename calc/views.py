@@ -348,6 +348,7 @@ def upload_handle(request):
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        print("Report Generated")
         return response
 def excel_generate(file,stock_sheet,sale_sheet,stock_store_number,sale_store_number,stock_model,sale_model,stock_total,sale_total,models):
     df = pd.read_excel(file,sale_sheet)
