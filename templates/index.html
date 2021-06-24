@@ -124,6 +124,7 @@
             background: linear-gradient(-45deg, #2196F3 50%, #EEEEEE 50%);
             background-repeat: no-repeat;
             background-attachment: fixed;
+            margin: 0;
         }
         
         .card {
@@ -855,16 +856,6 @@
     <!-- End of Profile Page -->
     {% elif content == "home" %}
     <!-- Main Home Page -->
-
-    <style>
-        body {
-            color: #000;
-            overflow-x: hidden;
-            height: 100%;
-            background: linear-gradient(-45deg, #2196F3 50%, #EEEEEE 50%);
-            background-repeat: no-repeat;
-        }
-    </style>
     <div class="container-fluid px-1 py-5 mx-autocontainer-fluid p-l-1 p-r-1 p-t-5 p-b-5 m-l-15 m-r-15 m-b-100">
         <div class="row d-flex justify-content-center">
             <div class="col-xl-5 col-lg-6 col-md-7 col-lg-offset-3">
@@ -1202,7 +1193,7 @@
                             if (stock_model.value != "") {
                                 let rowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[document.getElementById("SA_sheet").value]);
                                 salesmodels = rowObject.map(a => a[sale_model.value]);
-                                console.log("salesmodels_before:", salesmodels);
+
                                 salesmodels = salesmodels.map(b => b.replace(/[^a-zA-Z0-9 ]/g, " ").trim());
                                 models = arrayUnique(stockmodels.concat(salesmodels));
 
@@ -1211,7 +1202,6 @@
 
                         document.getElementById("filter").addEventListener("click", (event) => {
                             event.preventDefault();
-                            console.log(filter_model)
                             let options = models.map((model, index) => `<div class="option">
                                 <input type="checkbox" class="radio" value="${model}" id="${model.replace(" ","_")}" name="${model.replace(" ","_")}" />
                                 <label for="${model.replace(" ","_")}" style="display:inline-block;">${model}</label><i class="material-icons hidden" style="display:inline-block">check_circle</i>
@@ -1232,6 +1222,7 @@
 
                             return a;
                         }
+
 
 
                     }
@@ -2633,27 +2624,6 @@
                 }
             })
         });
-        /*$("#upload_excel").submit(function(event) {
-                event.preventDefault(); //prevent default action 
-                var post_url = $(this).attr("action"); //get form action url
-                var request_method = $(this).attr("method"); //get form GET/POST method
-                var form_data = new FormData(this);
-
-
-
-                $.ajax({
-                    url: post_url,
-                    type: request_method,
-                    processData: false,
-                    contentType: false,
-                    mimetype: "multipart/form-data",
-                    data: form_data,
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    success: function(response) {
-                        console.log(response)
-                    }
-                });
-            });*/
     </script>
     <!-- complete modal -->
     <!-- Bootstrap core JavaScript
