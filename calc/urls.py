@@ -1,6 +1,8 @@
 from django.urls import path
 from django.conf.urls import url
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 
@@ -16,6 +18,8 @@ urlpatterns = [
     path('Contact',views.contact,name="contact"),
     path('Price',views.price,name="price"),
     path('Profile',views.profile,name="profile"),
-   
+    path('upload',views.upload_handle,name="upload")
 
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,3 +1,5 @@
+from django.db.models.fields import files
+from mainproject.settings import MEDIA_ROOT
 from django.contrib import auth
 from django.contrib.auth.forms import UsernameField
 from django.contrib.auth.signals import user_logged_in
@@ -19,6 +21,12 @@ from django.conf import Settings, settings
 from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives,EmailMessage
 from django.template import Context, context
+import os
+from django.views.decorators.csrf import csrf_exempt
+from io import BytesIO
+import numpy as np
+import re
+
 
 # Create your views here.
 
@@ -49,7 +57,7 @@ def home(request):
         if not user.has_usable_password():
             change = "Create Password"
         
-
+        return redirect('profile')
 
     socialaccount_obj = SocialAccount.objects.filter(provider='google', user_id=current_user.id)
     
@@ -304,4 +312,91 @@ def price(request):
     if not request.user.is_authenticated:
         return redirect("/")
     return render(request,"index.html",{'content':'price'})
+@csrf_exempt
+def upload_handle(request):
+    data = {}
+    
+   
+    profile = User.objects.filter(email=request.user.email).first()
+    print(profile.email)
+    if request.method == "POST":
+        File = request.FILES['uploadfile']
+        ST_sheet = request.POST.get("ST_sheet")
+        SA_sheet = request.POST.get("SA_sheet")
+        ST_store_number = request.POST.get("ST_store_number")
+        SA_store_number = request.POST.get("SA_store_number")
+        ST_model = request.POST.get("ST_model")
+        SA_model = request.POST.get("SA_model")
+        ST_total = request.POST.get("ST_total")
+        SA_total = request.POST.get("SA_total")
+        models = request.POST.get("models")
+        models = models.split(",")
+        file_name = request.POST.get("file_name")
+    
+    df = excel_generate(File,ST_sheet,SA_sheet,ST_store_number,SA_store_number,ST_model,SA_model,ST_total,SA_total,models)
+    # document = Uploaded_file.objects.create(user2=profile, file=File)
+    # document.save()
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        df.to_excel(writer, sheet_name='Sheet1')
+        writer.save()
+        # Set up the Http response.
+        filename = file_name
+        response = HttpResponse(
+            b.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        return response
+def excel_generate(file,stock_sheet,sale_sheet,stock_store_number,sale_store_number,stock_model,sale_model,stock_total,sale_total,models):
+    df = pd.read_excel(file,sale_sheet)
+    print("df1")
+    
+    df2 = pd.read_excel(file,stock_sheet)
+    store_code = [9131,8829,8769,8824,8822,8827,8961,'TR67','TB83',6311,7461,6627,8661,8959,7989,'T751',7656,'TJY0',8697,7907,'T750',9136,'TP56',8763,8815,7532,'TR12',7568,'TIY6',7558,8836,'T556',8825,7950,7853,'TU49',8823,'TGJ6',8742,7566,'TV17',8834,8731,8813,8675,7828,8768,8474,'TY19',6362,'T766',7835,7969,7530,'TK86',7569,3611,3696,3756,3883,6024,6262,6280,6304,6322,6350,6377,6379,6405,6410,6437,6483,6545,6650,6651,6654,6657,6660,6674,6740,6749,6785,6808,6832,6839,6917,7479,7529,7546,7553,7577,7578,7612,7649,7657,7672,7730,7733,7785,7786,7800,7810,7814,7854,7927,7966,8475,8674,8679,8736,8967,9183,9184,9186,9505,9506,'T666','T754','TC79','TEZ6','TH21','TI04','TI05','TJR0','TM91','TO50','TU16','TW84','TW86','TX53','TY23','TY90']
+    df3 = pd.DataFrame()
+    df = df[df[sale_store_number].isin(store_code)]
+    
+    df[sale_model] = df[sale_model].map(lambda x: re.sub(r'\W+', ' ',x))
+    df[sale_model] = df[sale_model].map(lambda x: str(x).strip())
+    print(df)
+    df = df[df[sale_model].isin(models)]
+    
+    df = pd.pivot_table(df,index=[sale_store_number,sale_model],values=sale_total,aggfunc='sum')
+    df = df.reset_index()
+    
+    df['store_model'] = df[sale_store_number].astype(str)+'-'+df[sale_model]
+    df['store_model'] = df['store_model'].apply(lambda x:str(x).strip())
+    print('df1')
+    print(df)
 
+    print('df2')
+    df2 = df2[df2[stock_store_number].isin(store_code)]
+    df2[stock_model] = df2[stock_model].str.replace('\\W'," ")
+    df2 = df2[df2[stock_model].isin(models)]
+    df2 = pd.pivot_table(df2,index=[stock_store_number,stock_model],values=stock_total,aggfunc=np.sum)
+    df2 = df2.reset_index()
+    
+    df2['store_model'] = df2[stock_store_number].astype(str)+'-'+df2[stock_model]
+    df2['store_model'] = df2['store_model'].apply(lambda x:str(x).strip())
+    print(df2)
+    
+    df3['store_model'] = pd.concat([df['store_model'],df2['store_model']],axis=0,ignore_index=True)
+    df3 =  df3.drop_duplicates()
+    df3 = df3.reset_index()
+    df3 = df3.merge(df2,on='store_model',how='outer',suffixes=('_stock','_sale')).merge(df,on='store_model',how='outer',suffixes=('_stock','_sale'))
+    df3.drop([sale_store_number,stock_store_number,sale_model,stock_model],axis=1,inplace=True)
+    df3[['Store Code','Model']] = df3.store_model.str.split("-",expand=True)
+    df3.drop('store_model',axis=1,inplace=True)
+
+    df3.fillna(0,inplace=True)
+    pd.set_option('precision',0)
+    # df3.astype({'AVAIL_QTY':'int64','SALE_QTY':'int64'})
+    df3['Stock Gap'] = df3[stock_total] - df3[sale_total]
+    df3 = df3.rename(columns={stock_total:'Stock',sale_total:'Sale'})
+    df3 = pd.pivot_table(df3,index=['Store Code','Model'],values=['Stock','Sale','Stock Gap'],aggfunc=np.sum)
+    df3 = df3.reset_index()
+    df3 = df3[['Store Code','Model','Stock','Sale','Stock Gap']]
+    
+    return df3

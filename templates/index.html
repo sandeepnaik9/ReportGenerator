@@ -10,11 +10,15 @@
     <link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
 
     <title>Report Generator</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+    <!--<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js'%}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
     <!-- Bootstrap core CSS -->
     <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
-
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <!-- Custom styles for this template -->
     <link href="{% static 'style.css' %}?{% now 'U' %}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
@@ -24,7 +28,6 @@
     <script src="bootstrap/js/html5shiv.js"></script>
     <script src="bootstrap/js/respond.min.js"></script>
     <![endif]-->
-
     {% if user.is_authenticated %}
     <style>
         body {
@@ -87,103 +90,369 @@
             box-shadow: none!important;
         }
     </style>
+    {% else %}
+    <style>
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            text-indent: 1px;
+            text-overflow: '';
+        }
+    </style>
     {% endif %}
     <!-- home style -->
     {% if content == "home" %}
     <style>
+        @media (min-width: 1200px) {
+            footer {
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+            }
+        }
+        
+        html {
+            height: 100%;
+        }
+        
         body {
-            background-color: whitesmoke;
-            background-image: url("https://www.transparenttextures.com/patterns/lyonnette.png");
-            border-bottom: 0px solid black;
-            height: 450px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        /* === Wrapper Styles === */
-        
-        #FileUpload {
-            display: flex;
-            justify-content: center;
+            padding: 80px 0px 80px 0px;
+            color: #000;
+            overflow-x: hidden;
+            height: 100%;
+            background: linear-gradient(-45deg, #2196F3 50%, #EEEEEE 50%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
         
-        .wrapper {
-            margin: 30px;
-            padding: 10px;
-            box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
-            border-radius: 10px;
-            background-color: white;
-            width: 415px;
-        }
-        /* === Upload Box === */
-        
-        .upload {
-            margin: 10px;
-            height: 85px;
-            border: 8px dashed #e6f5e9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 5px;
+        .card {
+            background-color: #FFF;
+            border-radius: 25px;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            z-index: 0
         }
         
-        .upload p {
-            margin-top: 12px;
-            line-height: 0;
-            font-size: 22px;
-            color: #0c3214;
-            letter-spacing: 1.5px;
+        .heading {
+            font-weight: normal
         }
         
-        .upload__button {
-            background-color: #e6f5e9;
-            border-radius: 10px;
-            padding: 0px 8px 0px 10px;
+        .desc {
+            font-size: 14px
         }
         
-        .upload__button:hover {
+        #progressbar {
+            margin-bottom: 30px;
+            overflow: hidden;
+            color: lightgrey;
+            padding-left: 0px
+        }
+        
+        #progressbar .active {
+            color: #673AB7
+        }
+        
+        #progressbar li {
+            list-style-type: none;
+            font-size: 15px;
+            width: 25%;
+            float: left;
+            position: relative;
+            font-weight: 400
+        }
+        
+        #progressbar .step0:before {
+            content: ""
+        }
+        
+        #progressbar li:before {
+            width: 40px;
+            height: 40px;
+            line-height: 45px;
+            display: block;
+            font-size: 20px;
+            background: #E0E0E0;
+            border-radius: 50%;
+            margin: auto;
+            padding: 2px
+        }
+        
+        #progressbar li:after {
+            content: '';
+            width: 100%;
+            height: 10px;
+            background: #E0E0E0;
+            position: absolute;
+            left: 0;
+            top: 17px;
+            z-index: -1
+        }
+        
+        #progressbar li:last-child:after {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px
+        }
+        
+        #progressbar li:first-child:after {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px
+        }
+        
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: #F9A825
+        }
+        
+        .sub-heading {
+            font-weight: 500
+        }
+        
+        .yellow-text {
+            color: #F9A825
+        }
+        
+        fieldset.show {
+            display: block
+        }
+        
+        fieldset {
+            display: none
+        }
+        
+        .radio {
+            display: inline-block;
+            border-radius: 0;
+            box-sizing: border-box;
             cursor: pointer;
-            opacity: 0.8;
-        }
-        /* === Uploaded Files === */
-        
-        .uploaded {
-            width: 375px;
-            margin: 10px;
-            background-color: #e6f5e9;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            align-items: center;
+            color: #BDBDBD;
+            font-weight: 500;
+            -webkit-filter: grayscale(100%);
+            -moz-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+            filter: grayscale(100%)
         }
         
-        .file {
+        .radio:hover {
+            box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1)
+        }
+        
+        .radio.selected {
+            border: 1px solid #F9A825;
+            box-shadow: 0px 8px 16px 0px #EEEEEE;
+            color: #29B6F6 !important;
+            -webkit-filter: grayscale(0%);
+            -moz-filter: grayscale(0%);
+            -o-filter: grayscale(0%);
+            -ms-filter: grayscale(0%);
+            filter: grayscale(0%)
+        }
+        
+        .card-block {
+            border: 1px solid #CFD8DC;
+            width: 45%;
+            margin: 2.5%;
+            padding: 20px 25px 15px 25px
+        }
+        
+        @media screen and (max-width: 768px) {
+            .card-block {
+                padding: 20px 20px 0px 20px;
+                height: 250px
+            }
+        }
+        
+        .icon {
+            width: 85px;
+            height: 100px
+        }
+        
+        .image-icon {
+            width: 85px;
+            height: 100px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px
+        }
+        
+        select,
+        input,
+        textarea,
+        button {
+            padding: 8px 15px 8px 15px;
+            border-radius: 0px;
+            margin-bottom: 25px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            color: #2C3E50;
+            background-color: #ECEFF1;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            letter-spacing: 1px
+        }
+        
+        select:focus,
+        input:focus,
+        textarea:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: 1px solid skyblue !important;
+            outline-width: 0
+        }
+        
+        button:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            outline-width: 0
+        }
+        
+        textarea {
+            height: 100px
+        }
+        
+        button {
+            width: 120px;
+            letter-spacing: 2px
+        }
+        
+        .fit-image {
+            width: 100%;
+            object-fit: cover
+        }
+        
+        .btn-block {
+            border-radius: 5px;
+            height: 50px;
+            font-weight: 500;
+            cursor: pointer
+        }
+        
+        .fa-long-arrow-right {
+            float: right;
+            margin-top: 4px
+        }
+        
+        .fa-long-arrow-left {
+            float: left;
+            margin-top: 4px
+        }
+        
+        h2 {
+            margin: 16px;
+        }
+        
+        .select-box {
+            position: relative;
             display: flex;
             flex-direction: column;
         }
         
-        .file__name {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: baseline;
-            width: 300px;
-            line-height: 0;
-            color: #0c3214;
-            font-size: 18px;
-            letter-spacing: 1.5px;
+        .select-box .options-container {
+            background: #2f3640;
+            color: #f5f6fa;
+            max-height: 0;
+            width: 100%;
+            opacity: 0;
+            transition: all 0.4s;
+            border-radius: 8px;
+            overflow: hidden;
+            order: 1;
         }
         
-        .fa-times:hover {
+        .selected {
+            background: #2f3640;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            color: #f5f6fa;
+            position: relative;
+            order: 0;
+        }
+        
+        .selected::after {
+            content: "";
+            background: url("img/arrow-down.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: absolute;
+            height: 100%;
+            width: 32px;
+            right: 10px;
+            top: 5px;
+            transition: all 0.4s;
+        }
+        
+        .select-box .options-container.active {
+            max-height: 240px;
+            opacity: 1;
+            overflow-y: scroll;
+            margin-top: 54px;
+        }
+        
+        .select-box .options-container.active+.selected::after {
+            transform: rotateX(180deg);
+            top: -6px;
+        }
+        
+        .select-box .options-container::-webkit-scrollbar {
+            width: 8px;
+            background: #0d141f;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .select-box .options-container::-webkit-scrollbar-thumb {
+            background: #525861;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .select-box .option,
+        .selected {
+            padding: 12px 24px;
             cursor: pointer;
-            opacity: 0.8;
         }
         
-        .fa-file-pdf {
-            padding: 15px;
-            font-size: 40px;
-            color: #0c3214;
+        .select-box .option:hover {
+            background: #414b57;
+        }
+        
+        .select-box label {
+            cursor: pointer;
+        }
+        
+        .select-box .option .radio {
+            display: none;
+        }
+        /* Searchbox */
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            font-family: "Roboto", sans-serif;
+            font-size: 16px;
+            position: absolute;
+            border-radius: 8px 8px 0 0;
+            z-index: 100;
+            border: 8px solid #2f3640;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+        }
+        
+        .select-box .options-container.active~.search-box input {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        * {
+            margin: 0;
+            box-sizing: border-box;
         }
     </style>
     {% endif %}
@@ -270,24 +539,23 @@
             border: 1px solid #ced4da;
             border-radius: .25rem;
         }
-        
-        select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            text-indent: 1px;
-            text-overflow: '';
-        }
     </style>
+    {% if content == "home" %}
 
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jsST_model.js"></script>
+    <script type="text/javascript" src="{% static 'js/fileupload.js' %}"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> {% endif %}
 </head>
 
 <body data-spy="scroll" data-target="#topnav">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
-    
+
     <div class="navbar navbar-inverse navbar-fixed-top" id="topnav">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" style="width:42px;">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -331,7 +599,7 @@
                     <li><a href="#pricing">Pricing</a></li>
                     <li><a href="#contact">Contact</a></li>
                     <li style="margin-left:10px;">
-                        <p><a class="btn btn-success btn-lg" style="margin: 10px 0px; padding:1px 6px;" onClick="register()">Register <i class="icon icon-angle-right"></i></a></p>
+                        <p><a class="btn btn-success btn-lg" style="margin: 10px 0px; padding:1px 6px;" onclick="register()">Register <i class="icon icon-angle-right"></i></a></p>
                         <script>
                             function register() {
                                 $("#loginModal").modal('hide');
@@ -345,7 +613,7 @@
                         </script>
                     </li>
                     <li style="margin-left:10px;">
-                        <p><a class="btn btn-success btn-lg" style="margin: 10px 0px; padding:1px 6px;" onClick="loginmod()">Login <i class="icon icon-angle-right"></i></a></p>
+                        <p><a class="btn btn-success btn-lg" style="margin: 10px 0px; padding:1px 6px;" onclick="loginmod()">Login <i class="icon icon-angle-right"></i></a></p>
                     </li>
                     {% endif %}
                 </ul>
@@ -506,7 +774,7 @@
                                         <h6 class="mb-0">First Name</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" name="firstnamec" id="firstnamec" class="form-control" value="{{user.first_name}}">
+                                        <input name="firstnamec" id="firstnamec" class="form-control" value="{{user.first_name}}">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -514,7 +782,7 @@
                                         <h6 class="mb-0">Last Name</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" name="lastnamec" id="lastnamec" class="form-control" value="{{user.last_name}}">
+                                        <input name="lastnamec" id="lastnamec" class="form-control" value="{{user.last_name}}">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -522,7 +790,7 @@
                                         <h6 class="mb-0">Email</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" name="emailc" class="form-control" value="{{user.email}}" id="emailc" disabled>
+                                        <input name="emailc" class="form-control" value="{{user.email}}" id="emailc" disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -530,7 +798,7 @@
                                         <h6 class="mb-0">Phone</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="phonec" id="pnumberc" value="{{userdata.phone_number}}">
+                                        <input class="form-control" name="phonec" id="pnumberc" value="{{userdata.phone_number}}">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -538,7 +806,7 @@
                                         <h6 class="mb-0">Job title</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" name="jtitle" class="form-control" value="{{userdata.job_title}}" id="jtitle">
+                                        <input name="jtitle" class="form-control" value="{{userdata.job_title}}" id="jtitle">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -546,7 +814,7 @@
                                         <h6 class="mb-0">Address</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" name="addressc" id="addressc" class="form-control" value="{{userdata.address}}">
+                                        <input name="addressc" id="addressc" class="form-control" value="{{userdata.address}}">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -587,29 +855,601 @@
     <!-- End of Profile Page -->
     {% elif content == "home" %}
     <!-- Main Home Page -->
-    <div class="container">
-        <div class="col-md-12"></div>
-        <div class="col-md-12">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input type="file" id="files" name="files" multiple="multiple" />
-                <p style="text-align: right; margin-top: 20px;">
-                    <input type="submit" value="Upload Files" class="btn btn-lg btn-primary" />
-                </p>
-            </form>
+
+    <style>
+        body {
+            color: #000;
+            overflow-x: hidden;
+            height: 100%;
+            background: linear-gradient(-45deg, #2196F3 50%, #EEEEEE 50%);
+            background-repeat: no-repeat;
+        }
+    </style>
+    <div class="container-fluid px-1 py-5 mx-autocontainer-fluid p-l-1 p-r-1 p-t-5 p-b-5 m-l-15 m-r-15 m-b-100">
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-7 col-lg-offset-3">
+                <div class="card b-0">
+                    <form id="uploadForm" action="upload" method="POST" enctype="multipart/form-data">
+                        <h3 class="heading">Upload File And Select Appropriate options to the Respective Fields </h3>
+                        <p>If you choose wrong options for the fileds you will get wrong report or report may not be generated properly. </p>
+                        <ul id="progressbar" class="text-center">
+                            <li class="active step0" id="step1"></li>
+                            <li class="step0" id="step2"></li>
+                            <li class="step0" id="step3"></li>
+                            <li class="step0" id="step4"></li>
+                        </ul>
+                        <fieldset class="show">
+                            <div class="form-card">
+                                <h5 class="sub-heading">Upload Excel File</h5>
+                                <div class="row px-1 radio-group">
+                                    <input id="input-b1" name="uploadfile" type="file" class="file" data-browse-on-zone-click="true" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                </div> <button id="next1" class="btn-block btn-primary mt-3 mb-1 next">NEXT<span class="fa fa-long-arrow-right"></span></button>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-card">
+                                <h5 class="sub-heading mb-4">Select Appropriate Sheet</h5> <label class="text-danger mb-3">* Required</label>
+                                <div class="form-group"> <label class="form-control-label">Select Stock Sheet * :</label> <select id="ST_sheet" name="ST_sheet" class="form-control" onblur="validate1(1)"> </select></div>
+                                <div class="form-group"> <label class="form-control-label">Select Sale Sheet * :</label> <select id="SA_sheet" name="SA_sheet" class="form-control" onblur="validate1(2)"></select> </div>
+                                <button id="next2" class="btn-block btn-primary mt-3 mb-1 next mt-4" onclick="validate1(0)">NEXT<span class="fa fa-long-arrow-right"></span></button> <button class="btn-block btn-secondary mt-3 mb-1 prev"><span class="fa fa-long-arrow-left"></span>PREVIOUS</button>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-card">
+                                <h5 class="sub-heading mb-4">Select Appropriate options</h5> <label class="text-danger mb-3">* Required</label>
+                                <div class="form-group"> <label class="form-control-label">Select Stock Store Number * :</label> <select id="ST_store_number" name="ST_store_number" placeholder="" class="form-control" onblur="validate2(1)"> </select></div>
+                                <div class="form-group"> <label class="form-control-label">Select Stock Model * :</label> <select id="ST_model" name="ST_model" placeholder="" class="form-control" onblur="validate2(2)"></select> </div>
+                                <div class="form-group"> <label class="form-control-label">Select Stock Total * :</label> <select id="ST_total" name="ST_total" placeholder="" class="form-control" onblur="validate2(3)"></select> </div>
+                                <div class="form-group"> <label class="form-control-label">Select Sale Store Number * :</label> <select id="SA_store_number" name="SA_store_number" placeholder="" class="form-control" onblur="validate2(4)"></select> </div>
+                                <div class="form-group"> <label class="form-control-label">Select Sale Model * :</label> <select id="SA_model" name="SA_model" placeholder="" class="form-control" onblur="validate2(5)"> </select></div>
+                                <div class="form-group"> <label class="form-control-label">Select Sale Total * :</label> <select id="SA_total" name="SA_total" placeholder="" class="form-control" onblur="validate2(6)"></select> </div>
+                                <div class="form-group"> <label class="form-control-label">Enter Output File Name * :</label> <input id="file_name" name="file_name" placeholder="Example.xlsx ('xlsx' should be mentioned)" class="form-control" onblur="validate2(7)"> </div>
+                                <button id="filter" class="btn-block btn-primary mt-3 mb-1 next mt-4">Filter<span class="fa fa-long-arrow-right"></span></button>
+                                <div class="form-group"> <label class="form-control-label">Filter Model * :</label>
+                                    <div class="select mb-3">
+
+                                        <div class="container-custom">
+
+                                            <div class="select-box">
+                                                <div class="options-container">
+
+                                                </div>
+                                                <input type="hidden" class="form-contol" value="models" id="models_1" name="models">
+                                                <div class="selected">
+                                                    Select Models
+                                                </div>
+
+                                                <div class="search-box">
+                                                    <input type="text" placeholder="Start Typing..." />
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div> <button type="submit" id="next3" class="btn-block btn-primary mt-3 mb-1 next mt-4" onclick="validate2(0)">Generate Report<span class="fa fa-long-arrow-right"></span></button> <button class="btn-block btn-secondary mt-3 mb-1 prev"><span class="fa fa-long-arrow-left"></span>PREVIOUS</button>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-card">
+                                <h5 class="sub-heading mb-4">Success!</h5>
+                                <p class="message">You'r report is generated<br>It will get downloaded in few seconds.</p>
+                                <div class="check"> <img class="fit-image check-img" src="https://i.imgur.com/QH6Zd6Y.gif"> </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="col-md-12"></div>
     </div>
-
-    <!-- you need to include the ShieldUI CSS and JS assets in order for the Upload widget to work -->
-    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light-bootstrap/all.min.css" />
-    <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
-
     <script type="text/javascript">
-        jQuery(function($) {
-            $("#files").shieldUpload();
+        //File Upload Script
+        $("#next3").click(function(event) {
+            //event.preventDefault(); //prevent default action
+            var form_data = new FormData(); //Encode form elements for submission
+            form_data.append("uploadfile", $("input[type=file]")[0].files[0]);
+            form_data.append("ST_sheet", $("#ST_sheet").val());
+            form_data.append("SA_sheet", $("#SA_sheet").val());
+            form_data.append("ST_store_number", $("#ST_store_number").val());
+            form_data.append("SA_store_number", $("#SA_store_number").val());
+            form_data.append("ST_model", $("#ST_model").val());
+            form_data.append("ST_total", $("#ST_total").val());
+            form_data.append("SA_model", $("#SA_model").val());
+            form_data.append("SA_total", $("#SA_total").val());
+            form_data.append("models", $("#models_1").val());
+            form_data.append("file_name", $("#file_name").val());
+            $.ajax({
+                url: "upload",
+                type: "POST",
+                data: form_data,
+
+                contentType: false,
+                processData: false,
+                mimeType: "multipart/form-data",
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                target: "_blank",
+
+                success: function(response) {
+                    console.log("File Downloaded Successfully");
+
+                }
+
+            });
+        });
+
+        const selected = document.querySelector(".selected");
+        const optionsContainer = document.querySelector(".options-container");
+        const searchBox = document.querySelector(".search-box input");
+
+        const optionsList = optionsContainer.querySelectorAll(".option");
+
+        selected.addEventListener("click", () => {
+            optionsContainer.classList.toggle("active");
+
+            searchBox.value = "";
+            filterList("");
+
+            if (optionsContainer.classList.contains("active")) {
+                searchBox.focus();
+            }
+        });
+
+
+
+
+        var favorite = [];
+
+        $(document).ready(function() {
+            $(".options-container").on("click", "input[type=checkbox]", function() {
+
+                if ($(this).prop("checked") == true) {
+                    $(this).next().next()[0].setAttribute('class', "material-icons");
+                    favorite.push($(this).val());
+                } else {
+                    $(this).next().next()[0].setAttribute('class', "material-icons hidden");
+                    let index = favorite.indexOf($(this).val());
+                    favorite.splice(index, 1);
+                }
+                selected.innerHTML = favorite.join(", ");
+                document.getElementById("models_1").value = favorite.join(",");
+            })
+        });
+
+
+
+
+
+
+        searchBox.addEventListener("keyup", function(e) {
+            filterList(e.target.value);
+
+        });
+
+        const filterList = searchTerm => {
+            searchTerm = searchTerm.toLowerCase();
+            let selected1 = $(".option")
+            selected1.each(function(index, el) {
+
+                let label = $.trim(selected1.eq(index).text()).toLowerCase();
+                if (label.indexOf(searchTerm) > -1) {
+
+                    selected1[index].style.display = "block";
+                } else {
+                    selected1[index].style.display = "none";
+                }
+            });
+        };
+        //next1-button script
+        let selectedfile1;
+        let workbook;
+
+
+        document.getElementById("input-b1").addEventListener("change", (event) => {
+            selectedfile1 = event.target.files[0];
+        });
+
+        document.getElementById("next1").addEventListener("click", (event) => {
+            event.preventDefault();
+            if (selectedfile1) {
+                let fileReader = new FileReader();
+                fileReader.readAsBinaryString(selectedfile1);
+                fileReader.onload = (event) => {
+
+                    let data = event.target.result;
+                    let workbook = XLSX.read(data, {
+                        type: "binary"
+                    });
+                    let sheetnames = workbook.SheetNames;
+                    var sto = document.getElementById('SA_sheet');
+                    while (sto.options.length > 0) {
+                        sto.remove(0);
+                    };
+                    sheetnames.forEach(function(item, index) {
+                        var opt = document.createElement('option');
+
+                        // create text node to add to option element (opt)
+                        opt.appendChild(document.createTextNode(item));
+
+                        // set value property of opt
+                        opt.value = item;
+
+                        // add opt to end of select box (sel)
+                        sto.appendChild(opt);
+
+                    });
+
+                    var sal = document.getElementById('ST_sheet');
+                    while (sal.options.length > 0) {
+                        sal.remove(0);
+                    };
+                    for (index in sheetnames) {
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(sheetnames[index]));
+                        opt.value = sheetnames[index];
+
+
+
+                        sal.appendChild(opt);
+                    };
+                    //Read all rows from First Sheet into an JSON array.
+                    /*var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[Sheet]);*/
+
+
+
+
+
+                }
+            }
+        });
+
+        // end of next-1
+
+        // next-2 button
+        document.getElementById("next2").addEventListener("click", (event) => {
+                event.preventDefault()
+                if (selectedfile1) {
+                    let fileReader = new FileReader();
+                    fileReader.readAsBinaryString(selectedfile1);
+                    fileReader.onload = (event) => {
+
+                        let data = event.target.result;
+                        let workbook = XLSX.read(data, {
+                            type: "binary"
+                        });
+                        let stock_sheet = document.getElementById("ST_sheet");
+                        let sale_sheet = document.getElementById("SA_sheet");
+                        let stock_ = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[stock_sheet.value]);
+                        let sale_ = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sale_sheet.value]);
+                        let stock_store_number = document.getElementById("ST_store_number");
+                        let stock_model = document.getElementById("ST_model");
+                        let stock_total = document.getElementById("ST_total");
+                        let sale_store_number = document.getElementById("SA_store_number");
+                        let sale_model = document.getElementById("SA_model");
+                        let sale_total = document.getElementById("SA_total");
+                        let filter_model = document.querySelector("body > div.container-fluid.px-1.py-5.mx-autocontainer-fluid.p-l-1.p-r-1.p-t-5.p-b-5.m-l-15.m-r-15 > div > div > div > fieldset.show > div > div:nth-child(10) > div > div > div.dropdown-menu.open > ul");
+
+                        let stock_l = Object.keys(stock_[0]);
+                        let sale_l = Object.keys(sale_[0]);
+                        while (stock_store_number.options.length > 0) {
+                            stock_store_number.remove(0);
+                        }
+                        for (let i = 0; i < stock_l.length; i++) {
+                            var opt = document.createElement('option');
+                            opt.appendChild(document.createTextNode(stock_l[i]));
+                            opt.value = stock_l[i];
+                            stock_store_number.append(opt);
+                        }
+                        while (stock_model.options.length > 0) {
+                            stock_model.remove(0);
+                        }
+                        for (let i = 0; i < stock_l.length; i++) {
+                            var opt = document.createElement('option');
+                            opt.appendChild(document.createTextNode(stock_l[i]));
+                            opt.value = stock_l[i];
+                            stock_model.append(opt);
+                        }
+                        while (stock_total.options.length > 0) {
+                            stock_total.remove(0);
+                        }
+                        for (let i = 0; i < stock_l.length; i++) {
+                            var opt = document.createElement('option');
+                            opt.appendChild(document.createTextNode(stock_l[i]));
+                            opt.value = stock_l[i];
+                            stock_total.append(opt);
+                        }
+                        while (sale_store_number.options.length > 0) {
+                            sale_store_number.remove(0);
+                        }
+
+                        for (let i = 0; i < sale_l.length; i++) {
+                            var opt = document.createElement('option');
+                            opt.appendChild(document.createTextNode(sale_l[i]));
+                            opt.value = sale_l[i];
+                            sale_store_number.append(opt)
+                        }
+                        while (sale_model.options.length > 0) {
+                            sale_model.remove(0);
+                        }
+                        for (let i = 0; i < sale_l.length; i++) {
+                            var opt = document.createElement('option');
+                            opt.appendChild(document.createTextNode(sale_l[i]));
+                            opt.value = sale_l[i];
+                            sale_model.append(opt);
+                        }
+                        while (sale_total.options.length > 0) {
+                            sale_total.remove(0);
+                        }
+                        for (let i = 0; i < sale_l.length; i++) {
+                            var opt = document.createElement('option');
+                            opt.appendChild(document.createTextNode(sale_l[i]));
+                            opt.value = sale_l[i];
+                            sale_total.append(opt);
+                        }
+                        var stockmodels = [];
+                        var salesmodels = [];
+
+
+                        stock_model.onchange = function() {
+                            if (stock_model.value != "") {
+                                let rowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[document.getElementById("ST_sheet").value]);
+                                stockmodels = rowObject.map(a => a[stock_model.value]);
+                                stockmodels = stockmodels.map(b => b.replace(/[^a-zA-Z0-9 ]/g, " ").trim());
+
+                            }
+                        };
+                        var models = [];
+                        sale_model.onchange = function() {
+                            if (stock_model.value != "") {
+                                let rowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[document.getElementById("SA_sheet").value]);
+                                salesmodels = rowObject.map(a => a[sale_model.value]);
+                                console.log("salesmodels_before:", salesmodels);
+                                salesmodels = salesmodels.map(b => b.replace(/[^a-zA-Z0-9 ]/g, " ").trim());
+                                models = arrayUnique(stockmodels.concat(salesmodels));
+
+                            }
+                        };
+
+                        document.getElementById("filter").addEventListener("click", (event) => {
+                            event.preventDefault();
+                            console.log(filter_model)
+                            let options = models.map((model, index) => `<div class="option">
+                                <input type="checkbox" class="radio" value="${model}" id="${model.replace(" ","_")}" name="${model.replace(" ","_")}" />
+                                <label for="${model.replace(" ","_")}" style="display:inline-block;">${model}</label><i class="material-icons hidden" style="display:inline-block">check_circle</i>
+                            </div>`).join('\n');
+                            optionsContainer.innerHTML = options;
+
+                        })
+
+
+                        function arrayUnique(array) {
+                            var a = array.concat();
+                            for (var i = 0; i < a.length; ++i) {
+                                for (var j = i + 1; j < a.length; ++j) {
+                                    if (a[i] === a[j])
+                                        a.splice(j--, 1);
+                                }
+                            }
+
+                            return a;
+                        }
+
+
+                        /*
+                        let models = []
+                        for (let i = 0; i < Object.entries(stock_).length; i++) {
+                            if (!models.includes(Object.entries(stock_)[i][1][stock_model.value])) {
+                                models.push(Object.entries(stock_)[i][1][stock_model.value]);
+                            }
+
+                        }
+                        console.log(models);*/
+                    }
+                }
+            })
+            // end of next-2
+        function validate1(val) {
+            v1 = document.getElementById("ST_sheet");
+            v2 = document.getElementById("SA_sheet");
+
+
+            flag1 = true;
+            flag2 = true;
+
+
+            if (val >= 1 || val == 0) {
+                if (v1.value == "") {
+                    v1.style.borderColor = "red";
+                    flag1 = false;
+                } else {
+                    v1.style.borderColor = "green";
+                    flag1 = true;
+                }
+            }
+
+            if (val >= 2 || val == 0) {
+                if (v2.value == "") {
+                    v2.style.borderColor = "red";
+                    flag2 = false;
+                } else {
+                    v2.style.borderColor = "green";
+                    flag2 = true;
+                }
+            }
+
+
+
+            flag = flag1 && flag2
+
+            return flag;
+        }
+
+        function validate2(val) {
+            v1 = document.getElementById("ST_store_number");
+            v2 = document.getElementById("ST_model");
+            v3 = document.getElementById("ST_total");
+            v4 = document.getElementById("SA_store_number");
+            v5 = document.getElementById("SA_model");
+            v6 = document.getElementById("SA_total");
+            V7 = document.getElementById("file_name");
+            flag1 = true;
+            flag2 = true;
+            flag3 = true;
+            flag4 = true;
+            flag5 = true;
+            flag6 = true;
+            flag7 = true;
+            if (val >= 1 || val == 0) {
+                if (v1.value == "") {
+                    v1.style.borderColor = "red";
+                    flag1 = false;
+                } else {
+                    v1.style.borderColor = "green";
+                    flag1 = true;
+                }
+            }
+
+            if (val >= 2 || val == 0) {
+                if (v2.value == "") {
+                    v2.style.borderColor = "red";
+                    flag2 = false;
+                } else {
+                    v2.style.borderColor = "green";
+                    flag2 = true;
+                }
+            }
+
+            if (val >= 3 || val == 0) {
+                if (v3.value == "") {
+                    v3.style.borderColor = "red";
+                    flag3 = false;
+                } else {
+                    v3.style.borderColor = "green";
+                    flag3 = true;
+                }
+            }
+
+            if (val >= 4 || val == 0) {
+                if (v4.value == "") {
+                    v4.style.borderColor = "red";
+                    flag4 = false;
+                } else {
+                    v4.style.borderColor = "green";
+                    flag4 = true;
+                }
+            }
+            if (val >= 5 || val == 0) {
+                if (v5.value == "") {
+                    v5.style.borderColor = "red";
+                    flag5 = false;
+                } else {
+                    v5.style.borderColor = "green";
+                    flag5 = true;
+                }
+            }
+            if (val >= 6 || val == 0) {
+                if (v6.value == "") {
+                    v1.style.borderColor = "red";
+                    flag6 = false;
+                } else {
+                    v6.style.borderColor = "green";
+                    flag6 = true;
+                }
+            }
+            if (val >= 7 || val == 0) {
+                if (v7.value == "") {
+                    v1.style.borderColor = "red";
+                    flag7 = false;
+                } else {
+                    v7.style.borderColor = "green";
+                    flag7 = true;
+                }
+            }
+
+            flag = flag1 && flag2 && flag3 && flag4 && flag5 && flag6 && flag7;
+
+            return flag;
+        }
+
+        $(document).ready(function() {
+
+            var current_fs, next_fs, previous_fs;
+
+            $(".next").click(function(event) {
+
+                str1 = "next1";
+                str2 = "next2";
+                str3 = "next3";
+
+                if (!str2.localeCompare($(this).attr('id')) && validate1(0) == true) {
+                    val2 = true;
+                } else {
+                    val2 = false;
+                }
+
+                if (!str3.localeCompare($(this).attr('id')) && validate2(0) == true) {
+                    val3 = true;
+                } else {
+                    val3 = false;
+                }
+
+                if (!str1.localeCompare($(this).attr('id')) || (!str2.localeCompare($(this).attr('id')) && val2 == true) || (!str3.localeCompare($(this).attr('id')) && val3 == true)) {
+                    current_fs = $(this).parent().parent();
+                    next_fs = $(this).parent().parent().next();
+
+                    $(current_fs).removeClass("show");
+                    $(next_fs).addClass("show");
+
+                    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+                    current_fs.animate({}, {
+                        step: function() {
+
+                            current_fs.css({
+                                'display': 'none',
+                                'position': 'relative'
+                            });
+
+                            next_fs.css({
+                                'display': 'block'
+                            });
+                        }
+                    });
+                }
+            });
+
+            $(".prev").click(function(event) {
+                event.preventDefault();
+                current_fs = $(this).parent().parent();
+                previous_fs = $(this).parent().parent().prev();
+
+                $(current_fs).removeClass("show");
+                $(previous_fs).addClass("show");
+
+                $("#progressbar li").eq($("fieldset").index(next_fs)).removeClass("active");
+
+                current_fs.animate({}, {
+                    step: function() {
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+
+                        previous_fs.css({
+                            'display': 'block'
+                        });
+                    }
+                });
+            });
+
+            $('.radio-group .radio').click(function() {
+                $(this).toggleClass('selected');
+            });
+
         });
     </script>
+
+
     <!-- End of Home Page -->
     {% endif %} {% if content == "contact" %}
     <!-- Contact Page -->
@@ -644,7 +1484,7 @@
                                                     <label class="ss-q-item-label" for="entry_203237845" style="margin-bottom:0"><div class="ss-q-title" style="display:block;font-weight:bold;margin-top:.83em;margin-bottom:;">Name
 </div>
 <div class="ss-q-help ss-secondary-text" dir="auto" style="display:block;margin:.1em 0 .25em 0;color:#666;"></div></label>
-                                                    <input type="text" name="entry.203237845" value="" class="ss-q-short form-control input-lg" id="entry_203237845" dir="auto" aria-label="Name" title="" required novalidate>
+                                                    <input name="entry.203237845" value="" class="ss-q-short form-control input-lg" id="entry_203237845" dir="auto" aria-label="Name" title="" required novalidate>
 
                                                 </div>
                                             </div>
@@ -655,7 +1495,7 @@
                                                     <label class="ss-q-item-label" for="entry_838088638" style="margin-bottom:0"><div class="ss-q-title">Email Address
 </div>
 <div class="ss-q-help ss-secondary-text" dir="auto" style="display:block;margin:.1em 0 .25em 0;color:#666;"></div></label>
-                                                    <input type="text" name="entry.838088638" value="" class="ss-q-short form-control input-lg" id="entry_838088638" dir="auto" aria-label="Email Address  " title="" style="" required novalidate>
+                                                    <input name="entry.838088638" value="" class="ss-q-short form-control input-lg" id="entry_838088638" dir="auto" aria-label="Email Address  " title="" style="" required novalidate>
 
                                                 </div>
                                             </div>
@@ -1191,7 +2031,7 @@
                                                     <label class="ss-q-item-label" for="entry_203237845" style="margin-bottom:0"><div class="ss-q-title" style="display:block;font-weight:bold;margin-top:.83em;margin-bottom:;">Name
 </div>
 <div class="ss-q-help ss-secondary-text" dir="auto" style="display:block;margin:.1em 0 .25em 0;color:#666;"></div></label>
-                                                    <input type="text" name="entry.203237845" value="" class="ss-q-short form-control input-lg" id="entry_203237845" dir="auto" aria-label="Name" title="" required novalidate>
+                                                    <input name="entry.203237845" value="" class="ss-q-short form-control input-lg" id="entry_203237845" dir="auto" aria-label="Name" title="" required novalidate>
 
                                                 </div>
                                             </div>
@@ -1202,7 +2042,7 @@
                                                     <label class="ss-q-item-label" for="entry_838088638" style="margin-bottom:0"><div class="ss-q-title">Email Address
 </div>
 <div class="ss-q-help ss-secondary-text" dir="auto" style="display:block;margin:.1em 0 .25em 0;color:#666;"></div></label>
-                                                    <input type="text" name="entry.838088638" value="" class="ss-q-short form-control input-lg" id="entry_838088638" dir="auto" aria-label="Email Address  " title="" style="" required novalidate>
+                                                    <input name="entry.838088638" value="" class="ss-q-short form-control input-lg" id="entry_838088638" dir="auto" aria-label="Email Address  " title="" style="" required novalidate>
 
                                                 </div>
                                             </div>
@@ -1286,10 +2126,10 @@
 
     </section>
     {% endif %} {% if user.is_authenticated %} {% if content == "price" or content == "home" or content == "contact" %}
-    <footer id="footer" style="position:fixed;bottom:0;left:0;width:100%">
+    <footer class="page-footer">
 
         {% else %}
-        <footer id="footer">
+        <footer class="page-footer">
             {% endif %}
             <div class="container">
                 <div class="row">
@@ -1314,502 +2154,524 @@
                 </div>
             </div>
         </footer>
-        {% else %}
-        <footer id="footer">
+    </footer>
+    {% else %}
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-ribbon" style="right: 0">
+                    <h3 class="title" style="margin: 0;padding: 5px 10px">Thank <span>You</span></h3>
+                </div>
+
+            </div>
+        </div>
+        <div class="footer-copyright">
             <div class="container">
                 <div class="row">
-                    <div class="footer-ribbon" style="right: 0">
-                        <h3 class="title" style="margin: 0;padding: 5px 10px">Thank <span>You</span></h3>
+                    <div class="col-md-2">
+                        <a class="logo" href="index.html">
+                            <img src="{% static 'images/expose-logo.png' %}" alt="Template Eden">
+                        </a>
                     </div>
-
-                </div>
-            </div>
-            <div class="footer-copyright">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <a class="logo" href="index.html">
-                                <img src="{% static 'images/expose-logo.png' %}" alt="Template Eden">
-                            </a>
-                        </div>
-                        <div class="col-md-5">
-                            <p>&copy; Copyright 2021 by R Sai Sandeep. All Rights Reserved.</p>
-                        </div>
+                    <div class="col-md-5">
+                        <p>&copy; Copyright 2021 by R Sai Sandeep. All Rights Reserved.</p>
                     </div>
-                </div>
-            </div>
-        </footer>
-        {% endif %}
-        <!-- Button trigger modal -->
-        <!-- Message Modal -->
-        <div class="modal fade " id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body" id="modal-background">
-                        <p id="message-area" align="middle" style="font-family:Arial, Helvetica, sans-serif"></p>
-                    </div>
-
-
                 </div>
             </div>
         </div>
-        <!-- change password -->
-        <div class="modal fade " id="changepwModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form class="login100-form validate-form flex-sb flex-w" method="POST" action="change_pwd" id="change_pass">
-                            {% csrf_token %}
-                            <div style='width:100%;'>
-                                <center>
-                                    <div class="alert alert-danger" id="errorm" style="display: none;">
-                                    </div>
-                                </center>
-                            </div>
-                            <div class="form-group input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                                </div>
-                                {% if change == "Create Password" %}
-                                <input name="cpwd" class="form-control" placeholder="Create password" type="password"> {% else %}
-                                <input name="opwd" class="form-control" placeholder="Old password" type="password"> {% endif %}
-                            </div>
-                            <!-- form-group// -->
-                            {% if change == "Change Password" %}
-                            <div class="form-group input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                                </div>
-                                <input name="npwd" class="form-control" placeholder="New password" type="password">
-                            </div>
-                            {% endif %}
-                            <div class="form-group input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                                </div>
-                                <input name="rpwd" class="form-control" placeholder="Repeat password" type="password">
-                            </div>
-                            <!-- form-group// -->
-                            <div class="form-group container-login100-form-btn m-t-17">
-                                <button type="submit" class="btn btn-primary btn-block login100-form-btn"> Submit</button>
-                            </div>
-                        </form>
-
-                    </div>
-
-                    <script>
-                        function jsubmit() {
-                            $('#jobModal').modal({
-                                backdrop: false
-                            });
-                            $('#jobModal').modal('hide');
-
-                            document.getElementById("job-title").innerHTML = document.getElementById("job-t").value
-
-                        }
-                    </script>
-
+    </footer>
+    {% endif %}
+    <!-- Button trigger modal -->
+    <!-- Message Modal -->
+    <div class="modal fade " id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body" id="modal-background">
+                    <p id="message-area" align="middle" style="font-family:Arial, Helvetica, sans-serif"></p>
                 </div>
+
+
             </div>
         </div>
-        <!-- Job title  -->
-        <div class="modal fade " id="jobModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form class="login100-form validate-form flex-sb flex-w" method="POST" action="{% url 'home' %}" id="storedata">
-                            {% csrf_token %}
-                            <div style='width:100%;'>
-                                <center>
-                                    <div class="alert alert-danger" id="errform" style="display: none;">
-                                    </div>
-                                </center>
-                            </div>
-                            <!-- form-group// -->
-                            <div class="form-group input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+    </div>
+    <!-- change password -->
+    <div class="modal fade " id="changepwModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form class="login100-form validate-form flex-sb flex-w" method="POST" action="change_pwd" id="change_pass">
+                        {% csrf_token %}
+                        <div style='width:100%;'>
+                            <center>
+                                <div class="alert alert-danger" id="errorm" style="display: none;">
                                 </div>
-                                <select class="custom-select" style="max-width: 120px;">
+                            </center>
+                        </div>
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                            </div>
+                            {% if change == "Create Password" %}
+                            <input name="cpwd" class="form-control" placeholder="Create password" type="password"> {% else %}
+                            <input name="opwd" class="form-control" placeholder="Old password" type="password"> {% endif %}
+                        </div>
+                        <!-- form-group// -->
+                        {% if change == "Change Password" %}
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                            </div>
+                            <input name="npwd" class="form-control" placeholder="New password" type="password">
+                        </div>
+                        {% endif %}
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                            </div>
+                            <input name="rpwd" class="form-control" placeholder="Repeat password" type="password">
+                        </div>
+                        <!-- form-group// -->
+                        <div class="form-group container-login100-form-btn m-t-17">
+                            <button type="submit" class="btn btn-primary btn-block login100-form-btn"> Submit</button>
+                        </div>
+                    </form>
+
+                </div>
+
+                <script>
+                    function jsubmit() {
+                        $('#jobModal').modal({
+                            backdrop: false
+                        });
+                        $('#jobModal').modal('hide');
+
+                        document.getElementById("job-title").innerHTML = document.getElementById("job-t").value
+
+                    }
+                </script>
+
+            </div>
+        </div>
+    </div>
+    <!-- Job title  -->
+    <div class="modal fade " id="jobModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form class="login100-form validate-form flex-sb flex-w" method="POST" action="{% url 'home' %}" id="storedata">
+                        {% csrf_token %}
+                        <div style='width:100%;'>
+                            <center>
+                                <div class="alert alert-danger" id="errform" style="display: none;">
+                                </div>
+                            </center>
+                        </div>
+                        <!-- form-group// -->
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+                            </div>
+                            <select class="custom-select" style="max-width: 120px;">
                     <option selected="">+91</option>
                 </select>
-                                <input name="pnum" class="form-control" placeholder="Phone number" type="text">
-                            </div>
-                            <!-- form-group// -->
-                            <div class="form-group input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
-                                </div>
-                                <input class="form-control" name="jtitle" id="job-t" placeholder="Enter Job Title" type="text">
-                            </div>
-                            <!-- form-group end.// -->
-                            <!-- form-group// -->
-                            <div class="form-group container-login100-form-btn m-t-17">
-                                <button type="submit" onclick="jsubmit()" class="btn btn-primary btn-block login100-form-btn"> Submit  </button>
-                            </div>
-                        </form>
-
-                    </div>
-
-                    <script>
-                        function jsubmit() {
-                            $('#jobModal').modal({
-                                backdrop: false
-                            });
-                            $('#jobModal').modal('hide');
-
-                            document.getElementById("job-title").innerHTML = document.getElementById("job-t").value
-
-                        }
-                    </script>
-
-                </div>
-            </div>
-        </div>
-        <!-- register modal -->
-        <div class="modal fade " id="registerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content" style="background-image: url('{% static 'images/bg-01.jpg' %}');">
-                    <div class="modal-body" id="modal-background">
-                        <div class="container">
-                            <div align="right"><a onclick="closeregister()" style="cursor: pointer;"><i class="fas fa-times"></i></a></div>
-                            <script>
-                                function closeregister() {
-                                    $("#registerModal").modal('hide');
-                                }
-                            </script>
-                            <div class="card bg-light">
-                                <center>
-                                    <article class="card-body mx-auto" style="max-width: 400px;">
-                                        <h4 class="card-title mt-3 text-center" style=" color: #fff;">Create Account</h4>
-                                        <p class="text-center" style="color: #fff;">Get started with your free account</p>
-
-
-                                        <form class="login100-form validate-form flex-sb flex-w" method="POST" action="{% url 'register_attempt' %}" id="registration_form">
-                                            {% csrf_token %}
-                                            <a href="accounts/google/login" class="btn-google m-b-20">
-                                                <img src="{% static 'images/icons/icon-google.png'  %}" alt="GOOGLE"> Google
-                                            </a>
-                                            <a href="accounts/facebook/login" class="btn-face m-b-20">
-                                                <i class="fa fa-facebook-official"></i> Facebook
-                                            </a>
-                                            <p class="divider-text" style="width: 100%;">
-                                                <span class="bg-white" style="color: #fff;">OR</span>
-                                            </p>
-                                            <div style='width:100%;'>
-                                                <center>
-
-                                                    <div class="alert alert-danger" id="error-message" style="display: none;">
-                                                    </div>
-
-                                                </center>
-                                            </div>
-                                            <div class="form-group input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
-                                                </div>
-                                                <input name="finame" class="form-control" placeholder="First Name" type="text">
-                                            </div>
-                                            <div class="form-group input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
-                                                </div>
-                                                <input name="laname" class="form-control" placeholder="Last name" type="text">
-                                            </div>
-                                            <!-- form-group// -->
-                                            <div class="form-group input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
-                                                </div>
-                                                <input name="e-id" class="form-control" placeholder="Email address" type="email">
-                                            </div>
-                                            <!-- form-group// -->
-                                            <div class="form-group input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
-                                                </div>
-                                                <select class="custom-select" style="max-width: 120px;">
-                                    <option selected="">+91</option>
-                                </select>
-                                                <input name="pnum" class="form-control" placeholder="Phone number" type="text">
-                                            </div>
-                                            <!-- form-group// -->
-                                            <div class="form-group input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
-                                                </div>
-                                                <input class="form-control" name="jtitle" placeholder="Enter Job Title" type="text">
-                                            </div>
-                                            <!-- form-group end.// -->
-                                            <div class="form-group input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                                                </div>
-                                                <input name="pwd" class="form-control" placeholder="Create password" type="password">
-                                            </div>
-                                            <!-- form-group// -->
-                                            <div class="form-group input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                                                </div>
-                                                <input name="rpwd" class="form-control" placeholder="Repeat password" type="password">
-                                            </div>
-                                            <!-- form-group// -->
-                                            <div class="form-group container-login100-form-btn m-t-17">
-                                                <button type="submit" id="register_submit" class="btn btn-primary btn-block login100-form-btn"> Create Account  </button>
-                                            </div>
-                                            <!-- form-group// -->
-                                            <p class="text-center" style="color: #fff;">Have an account? <a onclick="loginmod()" style="color: crimson; cursor:pointer">Log In</a> </p>
-                                        </form>
-                                    </article>
-                                </center>
-                            </div>
-                            <!-- card.// -->
-
+                            <input name="pnum" class="form-control" placeholder="Phone number">
                         </div>
-                    </div>
-
+                        <!-- form-group// -->
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+                            </div>
+                            <input class="form-control" name="jtitle" id="job-t" placeholder="Enter Job Title">
+                        </div>
+                        <!-- form-group end.// -->
+                        <!-- form-group// -->
+                        <div class="form-group container-login100-form-btn m-t-17">
+                            <button type="submit" onclick="jsubmit()" class="btn btn-primary btn-block login100-form-btn"> Submit  </button>
+                        </div>
+                    </form>
 
                 </div>
+
+                <script>
+                    function jsubmit() {
+                        $('#jobModal').modal({
+                            backdrop: false
+                        });
+                        $('#jobModal').modal('hide');
+
+                        document.getElementById("job-title").innerHTML = document.getElementById("job-t").value
+
+                    }
+                </script>
+
             </div>
         </div>
-        <!-- login modal -->
-        <div class="modal fade " id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content" style="background-image: url('{% static 'images/bg-01.jpg' %}');">
-                    <div class="modal-body">
-                        <div align="right"><a onclick="closelogin()" style="cursor: pointer;"><i class="fas fa-times"></i></a></div>
+    </div>
+    <!-- register modal -->
+    <div class="modal fade " id="registerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-image: url('{% static 'images/bg-01.jpg' %}');">
+                <div class="modal-body" id="modal-background">
+                    <div class="container">
+                        <div align="right"><a onclick="closeregister()" style="cursor: pointer;"><i class="fas fa-times"></i></a></div>
                         <script>
-                            function closelogin() {
-                                $("#loginModal").modal("hide");
+                            function closeregister() {
+                                $("#registerModal").modal('hide');
                             }
                         </script>
-                        <form class="login100-form validate-form flex-sb flex-w" action="{% url 'login_attempt' %}" method="POST" id="login_form">
-                            {% csrf_token %}
-                            <span class="login100-form-title p-b-53">
+                        <div class="card bg-light">
+                            <center>
+                                <article class="card-body mx-auto" style="max-width: 400px;">
+                                    <h4 class="card-title mt-3 text-center" style=" color: #fff;">Create Account</h4>
+                                    <p class="text-center" style="color: #fff;">Get started with your free account</p>
+
+
+                                    <form class="login100-form validate-form flex-sb flex-w" method="POST" action="{% url 'register_attempt' %}" id="registration_form">
+                                        {% csrf_token %}
+                                        <a href="accounts/google/login" class="btn-google m-b-20">
+                                            <img src="{% static 'images/icons/icon-google.png'  %}" alt="GOOGLE"> Google
+                                        </a>
+                                        <a href="accounts/facebook/login" class="btn-face m-b-20">
+                                            <i class="fa fa-facebook-official"></i> Facebook
+                                        </a>
+                                        <p class="divider-text" style="width: 100%;">
+                                            <span class="bg-white" style="color: #fff;">OR</span>
+                                        </p>
+                                        <div style='width:100%;'>
+                                            <center>
+
+                                                <div class="alert alert-danger" id="error-message" style="display: none;">
+                                                </div>
+
+                                            </center>
+                                        </div>
+                                        <div class="form-group input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                                            </div>
+                                            <input name="finame" class="form-control" placeholder="First Name">
+                                        </div>
+                                        <div class="form-group input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                                            </div>
+                                            <input name="laname" class="form-control" placeholder="Last name">
+                                        </div>
+                                        <!-- form-group// -->
+                                        <div class="form-group input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                                            </div>
+                                            <input name="e-id" class="form-control" placeholder="Email address" type="email">
+                                        </div>
+                                        <!-- form-group// -->
+                                        <div class="form-group input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+                                            </div>
+                                            <select class="custom-select" style="max-width: 120px;">
+                                    <option selected="">+91</option>
+                                </select>
+                                            <input name="pnum" class="form-control" placeholder="Phone number">
+                                        </div>
+                                        <!-- form-group// -->
+                                        <div class="form-group input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+                                            </div>
+                                            <input class="form-control" name="jtitle" placeholder="Enter Job Title">
+                                        </div>
+                                        <!-- form-group end.// -->
+                                        <div class="form-group input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                                            </div>
+                                            <input name="pwd" class="form-control" placeholder="Create password" type="password">
+                                        </div>
+                                        <!-- form-group// -->
+                                        <div class="form-group input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                                            </div>
+                                            <input name="rpwd" class="form-control" placeholder="Repeat password" type="password">
+                                        </div>
+                                        <!-- form-group// -->
+                                        <div class="form-group container-login100-form-btn m-t-17">
+                                            <button type="submit" id="register_submit" class="btn btn-primary btn-block login100-form-btn"> Create Account  </button>
+                                        </div>
+                                        <!-- form-group// -->
+                                        <p class="text-center" style="color: #fff;">Have an account? <a onclick="loginmod()" style="color: crimson; cursor:pointer">Log In</a> </p>
+                                    </form>
+                                </article>
+                            </center>
+                        </div>
+                        <!-- card.// -->
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- login modal -->
+    <div class="modal fade " id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-image: url('{% static 'images/bg-01.jpg' %}');">
+                <div class="modal-body">
+                    <div align="right"><a onclick="closelogin()" style="cursor: pointer;"><i class="fas fa-times"></i></a></div>
+                    <script>
+                        function closelogin() {
+                            $("#loginModal").modal("hide");
+                        }
+                    </script>
+                    <form class="login100-form validate-form flex-sb flex-w" action="{% url 'login_attempt' %}" method="POST" id="login_form">
+                        {% csrf_token %}
+                        <span class="login100-form-title p-b-53">
                                         Sign In With
                         </span>
 
-                            <a href="/accounts/google/login" class="btn-google m-b-20">
-                                <img src="{% static 'images/icons/icon-google.png'  %}" alt="GOOGLE"> Google
-                            </a>
-                            <a href="/accounts/facebook/login" class="btn-face m-b-20">
-                                <i class="fa fa-facebook-official"></i> Facebook
-                            </a>
-                            <div class="alert alert-success login100-form-title p-b-15 m-b-0 hidden" id="verifysuccess">
-                                <h3> {{verify}} </h3>
-                            </div><br>
-                            <div class="p-t-13 p-b-9">
-                                <span class="txt1" style="color:rgba(255, 255, 255, 0.89)">
+                        <a href="/accounts/google/login" class="btn-google m-b-20">
+                            <img src="{% static 'images/icons/icon-google.png'  %}" alt="GOOGLE"> Google
+                        </a>
+                        <a href="/accounts/facebook/login" class="btn-face m-b-20">
+                            <i class="fa fa-facebook-official"></i> Facebook
+                        </a>
+                        <div class="alert alert-success login100-form-title p-b-15 m-b-0 hidden" id="verifysuccess">
+                            <h3> {{verify}} </h3>
+                        </div><br>
+                        <div class="p-t-13 p-b-9">
+                            <span class="txt1" style="color:rgba(255, 255, 255, 0.89)">
                                             Email
                                         </span>
-                            </div>
-                            <div class="wrap-input100 validate-input" data-validate="Username is required">
-                                <input class="input100" type="email" name="email" required>
-                                <span class="focus-input100"></span>
-                            </div>
+                        </div>
+                        <div class="wrap-input100 validate-input" data-validate="Username is required">
+                            <input class="input100" type="email" name="email" required>
+                            <span class="focus-input100"></span>
+                        </div>
 
-                            <div class="p-t-13 p-b-9">
-                                <span class="txt1" style="color:rgba(255, 255, 255, 0.89)">
+                        <div class="p-t-13 p-b-9">
+                            <span class="txt1" style="color:rgba(255, 255, 255, 0.89)">
                                             Password
                                         </span>
 
-                                <a href="#" class="txt2 bo1 m-l-5" style="color:rgba(250, 4, 176, 0.89); text-decoration:none;">
+                            <a href="#" class="txt2 bo1 m-l-5" style="color:rgba(250, 4, 176, 0.89); text-decoration:none;">
                                             Forgot?
                                         </a>
-                            </div>
-                            <div class="wrap-input100 validate-input" data-validate="Password is required">
-                                <input class="input100" type="password" name="passw">
-                                <span class="focus-input100"></span>
-                            </div>
+                        </div>
+                        <div class="wrap-input100 validate-input" data-validate="Password is required">
+                            <input class="input100" type="password" name="passw">
+                            <span class="focus-input100"></span>
+                        </div>
 
-                            <div class="container-login100-form-btn m-t-17">
-                                <button class="login100-form-btn">
+                        <div class="container-login100-form-btn m-t-17">
+                            <button class="login100-form-btn">
                                             Sign In
                                         </button>
-                            </div>
+                        </div>
 
-                            <div class="w-full text-center p-t-55">
-                                <span class="txt2" style="color:rgba(255, 255, 255, 0.89)">
+                        <div class="w-full text-center p-t-55">
+                            <span class="txt2" style="color:rgba(255, 255, 255, 0.89)">
                                             Not a member?
                                         </span>
 
-                                <a onclick="register()" class="txt2 bo1" style="color:rgba(250, 4, 176, 0.89); cursor:pointer">
+                            <a onclick="register()" class="txt2 bo1" style="color:rgba(250, 4, 176, 0.89); cursor:pointer">
                                             Sign up now
                                         </a>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-        {% if con %}
-        <script>
-            window.addEventListener('load', (event) => {
-                $("#loginModal").modal('{{con}}');
-                document.getElementById("verifysuccess").className = "alert alert-success login100-form-title p-b-15 m-b-0";
+    </div>
+    {% if con %}
+    <script>
+        window.addEventListener('load', (event) => {
+            $("#loginModal").modal('{{con}}');
+            document.getElementById("verifysuccess").className = "alert alert-success login100-form-title p-b-15 m-b-0";
 
-            });
-        </script>
-        {% endif %}
+        });
+    </script>
+    {% endif %}
 
-        <script>
-            $("#registration_form").submit(function(event) {
+    <script>
+        $("#registration_form").submit(function(event) {
+            event.preventDefault(); //prevent default action 
+            var post_url = $(this).attr("action"); //get form action url
+            var request_method = $(this).attr("method"); //get form GET/POST method
+            var form_data = $(this).serialize(); //Encode form elements for submission
+
+            $.ajax({
+                url: post_url,
+                type: request_method,
+                data: form_data,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                success: function(response) {
+                    if (response["error"]) {
+                        $("#error-message").html(response['success']);
+                        document.getElementById("error-message").className = "alert alert-danger h3";
+                        document.getElementById("error-message").style.display = "block";
+                        document.getElementById("error-message").style.fontSize = "20px";
+                        $('input[name="e-id"]').val('');
+                        $('input[name="pwd"]').val('');
+                        $('input[name="rpwd"]').val('');
+                    } else {
+                        $("#error-message").html(response['success']);
+                        document.getElementById("error-message").className = "alert alert-success h3";
+                        document.getElementById("error-message").style.display = "block";
+                        document.getElementById("error-message").style.fontSize = "20px";
+                    }
+                }
+            })
+        });
+        $("#storedata").submit(function(event) {
+            event.preventDefault(); //prevent default action 
+            var post_url = $(this).attr("action"); //get form action url
+            var request_method = $(this).attr("method"); //get form GET/POST method
+            var form_data = $(this).serialize(); //Encode form elements for submission
+
+
+            $.ajax({
+                url: post_url,
+                type: request_method,
+                data: form_data,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                success: function(response) {
+                    if (response["error"]) {
+                        document.getElementById("job-title").innerHTML = document.getElementById("job-t").value
+                        $("#error-message").html(response['success']);
+
+                    }
+                }
+            })
+        });
+
+        function changeModal() {
+            $("#changepwModal").modal("show")
+        }
+        $("#login_form").submit(function(event) {
+            event.preventDefault(); //prevent default action 
+            var post_url = $(this).attr("action"); //get form action url
+            var request_method = $(this).attr("method"); //get form GET/POST method
+            var form_data = $(this).serialize(); //Encode form elements for submission
+
+
+            $.ajax({
+                url: post_url,
+                type: request_method,
+                data: form_data,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                success: function(response) {
+                    if (response["error"]) {
+                        document.getElementById("verifysuccess").style.fontSize = "20px";
+                        document.getElementById("verifysuccess").className = "alert alert-danger login100-form-title p-b-15 m-b-0";
+                        $("#verifysuccess").html(response['success']);
+
+                    } else {
+                        document.getElementById("verifysuccess").style.fontSize = "20px";
+                        document.getElementById("verifysuccess").className = "alert alert-success login100-form-title p-b-15 m-b-0";
+                        $("#verifysuccess").html(response['success']);
+                    }
+                    if (response["error"] == "loggedin") {
+                        window.location.href = '/Profile';
+                    }
+                }
+            })
+        });
+        $("#save_change").submit(function(event) {
+            event.preventDefault(); //prevent default action 
+            var post_url = $(this).attr("action"); //get form action url
+            var request_method = $(this).attr("method"); //get form GET/POST method
+            var form_data = $(this).serialize(); //Encode form elements for submission
+
+
+            $.ajax({
+                url: post_url,
+                type: request_method,
+                data: form_data,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                success: function(response) {
+                    if (response["error"]) {
+                        document.getElementById("verifysuccess").style.fontSize = "20px";
+                        document.getElementById("verifysuccess").className = "alert alert-danger login100-form-title p-b-15 m-b-0";
+                        $("#verifysuccess").html(response['success']);
+
+                    } else {
+                        document.getElementById("verifysuccess").style.fontSize = "20px";
+                        document.getElementById("verifysuccess").className = "alert alert-success login100-form-title p-b-15 m-b-0";
+                        $("#verifysuccess").html(response['success']);
+                    }
+                    if (response["error"] == "loggedin") {
+                        window.location.href = '/';
+                    }
+                }
+            })
+        });
+        $("#change_pass").submit(function(event) {
+            event.preventDefault(); //prevent default action 
+            var post_url = $(this).attr("action"); //get form action url
+            var request_method = $(this).attr("method"); //get form GET/POST method
+            var form_data = $(this).serialize(); //Encode form elements for submission
+
+
+            $.ajax({
+                url: post_url,
+                type: request_method,
+                data: form_data,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                success: function(response) {
+                    if (response["er"]) {
+                        document.getElementById("errorm").style.fontSize = "20px";
+                        document.getElementById("errorm").style.display = "block";
+                        $("input[name='cpwd']").val('');
+                        $("input[name='opwd']").val('');
+                        $("input[name='npwd']").val('');
+                        $("input[name='rpwd']").val('');
+                        document.getElementById("errorm").className = "alert alert-danger login100-form-title p-b-15 m-b-4";
+                        $("#errorm").html(response['success']);
+
+                    } else {
+                        if (response['cont'] == "Change Password") {
+                            $("#chbt").val("Change Password")
+                        }
+                        document.getElementById("errorm").style.display = "block";
+                        document.getElementById("errorm").style.fontSize = "20px";
+                        document.getElementById("errorm").className = "alert alert-success login100-form-title p-b-15 m-b-4";
+                        $("#errorm").html(response['success']);
+                    }
+                }
+            })
+        });
+        /*$("#upload_excel").submit(function(event) {
                 event.preventDefault(); //prevent default action 
                 var post_url = $(this).attr("action"); //get form action url
                 var request_method = $(this).attr("method"); //get form GET/POST method
-                var form_data = $(this).serialize(); //Encode form elements for submission
+                var form_data = new FormData(this);
+
+
 
                 $.ajax({
                     url: post_url,
                     type: request_method,
+                    processData: false,
+                    contentType: false,
+                    mimetype: "multipart/form-data",
                     data: form_data,
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                     success: function(response) {
-                        if (response["error"]) {
-                            $("#error-message").html(response['success']);
-                            document.getElementById("error-message").className = "alert alert-danger h3";
-                            document.getElementById("error-message").style.display = "block";
-                            document.getElementById("error-message").style.fontSize = "20px";
-                            $('input[name="e-id"]').val('');
-                            $('input[name="pwd"]').val('');
-                            $('input[name="rpwd"]').val('');
-                        } else {
-                            $("#error-message").html(response['success']);
-                            document.getElementById("error-message").className = "alert alert-success h3";
-                            document.getElementById("error-message").style.display = "block";
-                            document.getElementById("error-message").style.fontSize = "20px";
-                        }
+                        console.log(response)
                     }
-                })
-            });
-            $("#storedata").submit(function(event) {
-                event.preventDefault(); //prevent default action 
-                var post_url = $(this).attr("action"); //get form action url
-                var request_method = $(this).attr("method"); //get form GET/POST method
-                var form_data = $(this).serialize(); //Encode form elements for submission
-
-
-                $.ajax({
-                    url: post_url,
-                    type: request_method,
-                    data: form_data,
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    success: function(response) {
-                        if (response["error"]) {
-                            document.getElementById("job-title").innerHTML = document.getElementById("job-t").value
-                            $("#error-message").html(response['success']);
-
-                        }
-                    }
-                })
-            });
-
-            function changeModal() {
-                $("#changepwModal").modal("show")
-            }
-            $("#login_form").submit(function(event) {
-                event.preventDefault(); //prevent default action 
-                var post_url = $(this).attr("action"); //get form action url
-                var request_method = $(this).attr("method"); //get form GET/POST method
-                var form_data = $(this).serialize(); //Encode form elements for submission
-
-
-                $.ajax({
-                    url: post_url,
-                    type: request_method,
-                    data: form_data,
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    success: function(response) {
-                        if (response["error"]) {
-                            document.getElementById("verifysuccess").style.fontSize = "20px";
-                            document.getElementById("verifysuccess").className = "alert alert-danger login100-form-title p-b-15 m-b-0";
-                            $("#verifysuccess").html(response['success']);
-
-                        } else {
-                            document.getElementById("verifysuccess").style.fontSize = "20px";
-                            document.getElementById("verifysuccess").className = "alert alert-success login100-form-title p-b-15 m-b-0";
-                            $("#verifysuccess").html(response['success']);
-                        }
-                        if (response["error"] == "loggedin") {
-                            window.location.href = '/Profile';
-                        }
-                    }
-                })
-            });
-            $("#save_change").submit(function(event) {
-                event.preventDefault(); //prevent default action 
-                var post_url = $(this).attr("action"); //get form action url
-                var request_method = $(this).attr("method"); //get form GET/POST method
-                var form_data = $(this).serialize(); //Encode form elements for submission
-
-
-                $.ajax({
-                    url: post_url,
-                    type: request_method,
-                    data: form_data,
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    success: function(response) {
-                        if (response["error"]) {
-                            document.getElementById("verifysuccess").style.fontSize = "20px";
-                            document.getElementById("verifysuccess").className = "alert alert-danger login100-form-title p-b-15 m-b-0";
-                            $("#verifysuccess").html(response['success']);
-
-                        } else {
-                            document.getElementById("verifysuccess").style.fontSize = "20px";
-                            document.getElementById("verifysuccess").className = "alert alert-success login100-form-title p-b-15 m-b-0";
-                            $("#verifysuccess").html(response['success']);
-                        }
-                        if (response["error"] == "loggedin") {
-                            window.location.href = '/';
-                        }
-                    }
-                })
-            });
-            $("#change_pass").submit(function(event) {
-                event.preventDefault(); //prevent default action 
-                var post_url = $(this).attr("action"); //get form action url
-                var request_method = $(this).attr("method"); //get form GET/POST method
-                var form_data = $(this).serialize(); //Encode form elements for submission
-
-
-                $.ajax({
-                    url: post_url,
-                    type: request_method,
-                    data: form_data,
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    success: function(response) {
-                        if (response["er"]) {
-                            document.getElementById("errorm").style.fontSize = "20px";
-                            document.getElementById("errorm").style.display = "block";
-                            $("input[name='cpwd']").val('');
-                            $("input[name='opwd']").val('');
-                            $("input[name='npwd']").val('');
-                            $("input[name='rpwd']").val('');
-                            document.getElementById("errorm").className = "alert alert-danger login100-form-title p-b-15 m-b-4";
-                            $("#errorm").html(response['success']);
-
-                        } else {
-                            if (response['cont'] == "Change Password") {
-                                $("#chbt").val("Change Password")
-                            }
-                            document.getElementById("errorm").style.display = "block";
-                            document.getElementById("errorm").style.fontSize = "20px";
-                            document.getElementById("errorm").className = "alert alert-success login100-form-title p-b-15 m-b-4";
-                            $("#errorm").html(response['success']);
-                        }
-                    }
-                })
-            });
-        </script>
-        <!-- complete modal -->
-        <!-- Bootstrap core JavaScript
+                });
+            });*/
+    </script>
+    <!-- complete modal -->
+    <!-- Bootstrap core JavaScript
 ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <script src="{% static 'js/jquery.js' %}"></script>
-        <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-growl/1.0.0/jquery.bootstrap-growl.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-growl/1.0.0/jquery.bootstrap-growl.js"></script>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-growl/1.0.0/jquery.bootstrap-growl.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-growl/1.0.0/jquery.bootstrap-growl.js"></script>
 </body>
 
 </html>

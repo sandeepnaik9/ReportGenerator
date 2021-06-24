@@ -1,0 +1,589 @@
+<style>
+        body {
+            color: #000;
+            overflow-x: hidden;
+            height: 100%;
+            background: linear-gradient(-45deg, #2196F3 50%, #EEEEEE 50%);
+            background-repeat: no-repeat
+        }
+        
+        .card {
+            background-color: #FFF;
+            border-radius: 25px;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            z-index: 0
+        }
+        
+        .heading {
+            font-weight: normal
+        }
+        
+        .desc {
+            font-size: 14px
+        }
+        
+        #progressbar {
+            margin-bottom: 30px;
+            overflow: hidden;
+            color: lightgrey;
+            padding-left: 0px
+        }
+        
+        #progressbar .active {
+            color: #673AB7
+        }
+        
+        #progressbar li {
+            list-style-type: none;
+            font-size: 15px;
+            width: 25%;
+            float: left;
+            position: relative;
+            font-weight: 400
+        }
+        
+        #progressbar .step0:before {
+            content: ""
+        }
+        
+        #progressbar li:before {
+            width: 40px;
+            height: 40px;
+            line-height: 45px;
+            display: block;
+            font-size: 20px;
+            background: #E0E0E0;
+            border-radius: 50%;
+            margin: auto;
+            padding: 2px
+        }
+        
+        #progressbar li:after {
+            content: '';
+            width: 100%;
+            height: 10px;
+            background: #E0E0E0;
+            position: absolute;
+            left: 0;
+            top: 17px;
+            z-index: -1
+        }
+        
+        #progressbar li:last-child:after {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px
+        }
+        
+        #progressbar li:first-child:after {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px
+        }
+        
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: #F9A825
+        }
+        
+        .sub-heading {
+            font-weight: 500
+        }
+        
+        .yellow-text {
+            color: #F9A825
+        }
+        
+        fieldset.show {
+            display: block
+        }
+        
+        fieldset {
+            display: none
+        }
+        
+        .radio {
+            display: inline-block;
+            border-radius: 0;
+            box-sizing: border-box;
+            cursor: pointer;
+            color: #BDBDBD;
+            font-weight: 500;
+            -webkit-filter: grayscale(100%);
+            -moz-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+            filter: grayscale(100%)
+        }
+        
+        .radio:hover {
+            box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1)
+        }
+        
+        .radio.selected {
+            border: 1px solid #F9A825;
+            box-shadow: 0px 8px 16px 0px #EEEEEE;
+            color: #29B6F6 !important;
+            -webkit-filter: grayscale(0%);
+            -moz-filter: grayscale(0%);
+            -o-filter: grayscale(0%);
+            -ms-filter: grayscale(0%);
+            filter: grayscale(0%)
+        }
+        
+        .card-block {
+            border: 1px solid #CFD8DC;
+            width: 45%;
+            margin: 2.5%;
+            padding: 20px 25px 15px 25px
+        }
+        
+        @media screen and (max-width: 768px) {
+            .card-block {
+                padding: 20px 20px 0px 20px;
+                height: 250px
+            }
+        }
+        
+        .icon {
+            width: 85px;
+            height: 100px
+        }
+        
+        .image-icon {
+            width: 85px;
+            height: 100px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px
+        }
+        
+        select,
+        input,
+        textarea,
+        button {
+            padding: 8px 15px 8px 15px;
+            border-radius: 0px;
+            margin-bottom: 25px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            color: #2C3E50;
+            background-color: #ECEFF1;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            letter-spacing: 1px
+        }
+        
+        select:focus,
+        input:focus,
+        textarea:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: 1px solid skyblue !important;
+            outline-width: 0
+        }
+        
+        button:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            outline-width: 0
+        }
+        
+        textarea {
+            height: 100px
+        }
+        
+        button {
+            width: 120px;
+            letter-spacing: 2px
+        }
+        
+        .fit-image {
+            width: 100%;
+            object-fit: cover
+        }
+        
+        .btn-block {
+            border-radius: 5px;
+            height: 50px;
+            font-weight: 500;
+            cursor: pointer
+        }
+        
+        .fa-long-arrow-right {
+            float: right;
+            margin-top: 4px
+        }
+        
+        .fa-long-arrow-left {
+            float: left;
+            margin-top: 4px
+        }
+    </style>
+    <div class="container-fluid px-1 py-5 mx-autocontainer-fluid p-l-1 p-r-1 p-t-5 p-b-5 m-l-15 m-r-15">
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-7 col-lg-offset-3">
+                <div class="card b-0">
+                    <h3 class="heading m-b-10">Upload File</h3>
+
+                    <ul id="progressbar" class="text-center">
+                        <li class="active step0" id="step1"></li>
+                        <li class="step0" id="step2"></li>
+                        <li class="step0" id="step3"></li>
+                        <li class="step0" id="step4"></li>
+                    </ul>
+                    <fieldset class="show">
+                        <div class="form-card">
+                            <h5 class="sub-heading">Select Service(s)</h5>
+                            <div class="row px-1 radio-group">
+
+
+
+                                <input id="input-b1" name="input-b1" type="file" class="file" data-browse-on-zone-click="true" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+
+                            </div> <button id="next1" class="btn-block btn-primary mt-3 mb-1 next">NEXT<span class="fa fa-long-arrow-right"></span></button>
+                        </div>
+                    </fieldset>
+                    <fieldset class="">
+                        <div class="form-card">
+                            <h5 class="sub-heading mb-4">Select Stock And Sale Sheet</h5> <label class="text-danger mb-3">* Required</label>
+                            <div class="form-group"> <label class="form-control-label">Stock Sheet * :</label> <select id="fname" name="fname" class="form-control" onblur="validate1(1)" style="border-color: red;"> <option value="Select Stock Sheet" selected disabled>Select Stock Sheet</option> </select></div>
+                            <div class="form-group"> <label class="form-control-label">Sale Sheet * :</label> <select id="lname" name="lname" class="form-control" onblur="validate1(2)" style="border-color: red;"><option value="Select Sale Sheet" selected disabled>Select Sale Sheet</option> </select></div>
+                            <button id="next2" class="btn-block btn-primary mt-3 mb-1 next mt-4" onclick="validate1(0)">NEXT<span class="fa fa-long-arrow-right"></span></button> <button class="btn-block btn-secondary mt-3 mb-1 prev"><span class="fa fa-long-arrow-left"></span>PREVIOUS</button>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-card">
+                            <h5 class="sub-heading mb-4">Company Details</h5> <label class="text-danger mb-3">* Required</label>
+                            <div class="form-group"> <label class="form-control-label"> Select Stock Store Number* :</label> <select id="ST_store_number" name="ST_store_number" class="form-control" onblur="validate2(1)"> </select></div>
+                            <div class="form-group"> <label class="form-control-label">Select Stock Model * :</label> <select id="ST_model" name="ST_model" class="form-control" onblur="validate2(2)"> </select></div>
+                            <div class="form-group"> <label class="form-control-label">Select Stock Total * :</label> <select id="ST_total" name="ST_total" class="form-control" onblur="validate2(3)"></select> </div>
+                            <div class="form-group"> <label class="form-control-label">Select Sale Store Number * :</label> <select id="SA_store_number" name="SA_store_number" class="form-control" onblur="validate2(4)"></select> </div>
+                            <div class="form-group"> <label class="form-control-label">Select Sale Model * :</label><select id="SA_model" name="SA_model" class="form-control" onblur="validate2(4)"></select></div>
+                            <div class="form-group"> <label class="form-control-label">Select Sale Total * :</label> <select id="SA_total" name="SA_total" class="form-control" onblur="validate2(4)"></select> </div>
+                            <div class="form-group"> <label class="form-control-label">Filter Model* :</label><select id="select-state lsFruits" name="FI_model" placeholder="Select Models" class="form-control selectpicker" onblur="validate2(4)" multiple="multiple" data-live-search="true"><option selected disabeled>Select Models</option></select></div>
+                        </div> <button id="next3" class="btn-block btn-primary mt-3 mb-1 next mt-4" onclick="validate2(0)">SUBMIT REQUEST<span class="fa fa-long-arrow-right"></span></button> <button class="btn-block btn-secondary mt-3 mb-1 prev"><span class="fa fa-long-arrow-left"></span>PREVIOUS</button>
+
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-card">
+                            <h5 class="sub-heading mb-4">Success!</h5>
+                            <p class="message">Thank You for choosing our website.<br>Quotation will be sent to your Email ID and Contact Number.</p>
+                            <div class="check"> <img class="fit-image check-img" src="https://i.imgur.com/QH6Zd6Y.gif"> </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    $(function () {
+			$('#lstFruits').multiselect({
+				includeSelectAllOption: true
+			});
+			$('#btnSelected').click(function () {
+				var selected = $("#lstFruits option:selected");
+				var message = "";
+				selected.each(function () {
+					message += $(this).text() + " " + $(this).val() + "\n";
+				});
+			});
+		});
+        let selectedfile1;
+        let workbook;
+        console.log(window);
+
+        document.getElementById("input-b1").addEventListener("change", (event) => {
+            selectedfile1 = event.target.files[0];
+        })
+
+        document.getElementById("next1").addEventListener("click", (event) => {
+            if (selectedfile1) {
+                let fileReader = new FileReader();
+                fileReader.readAsBinaryString(selectedfile1);
+                fileReader.onload = (event) => {
+                    console.log(event.target.result);
+                    let data = event.target.result;
+                    let workbook = XLSX.read(data, {
+                        type: "binary"
+                    });
+                    let sheetnames = workbook.SheetNames;
+                    var sto = document.getElementById('lname');
+                    while (sto.options.length > 1) {
+                        sto.remove(1);
+                    };
+                    sheetnames.forEach(function(item, index) {
+                        var opt = document.createElement('option');
+
+                        // create text node to add to option element (opt)
+                        opt.appendChild(document.createTextNode(item));
+
+                        // set value property of opt
+                        opt.value = item;
+
+                        // add opt to end of select box (sel)
+                        sto.appendChild(opt);
+
+                    });
+
+                    var sal = document.getElementById('fname');
+                    while (sal.options.length > 1) {
+                        sal.remove(1);
+                    };
+                    for (index in sheetnames) {
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(sheetnames[index]));
+                        opt.value = sheetnames[index];
+
+                        console.log(opt);
+
+                        sal.appendChild(opt);
+                    }
+                    //Read all rows from First Sheet into an JSON array.
+                    /*var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[Sheet]);*/
+
+
+                    let rowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets["MTD"]);
+                    console.log("MTD", rowObject);
+
+                }
+            }
+        })
+
+        document.getElementById("next2").addEventListener("click", (event) => {
+            if (selectedfile1) {
+                let fileReader = new FileReader();
+                fileReader.readAsBinaryString(selectedfile1);
+                fileReader.onload = (event) => {
+                    console.log(event.target.result);
+                    let data = event.target.result;
+                    let workbook = XLSX.read(data, {
+                        type: "binary"
+                    });
+                    let stock_sheet = document.getElementById("fname");
+                    let sale_sheet = document.getElementById("lname");
+                    let stock_ = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[stock_sheet.value]);
+                    let sale_ = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sale_sheet.value]);
+                    let stock_store_number = document.getElementById("ST_store_number");
+                    let stock_model = document.getElementById("ST_model");
+                    let stock_total = document.getElementById("ST_total");
+                    let sale_store_number = document.getElementById("SA_store_number");
+                    let sale_model = document.getElementById("SA_model");
+                    let sale_total = document.getElementById("SA_total");
+                    let stock_l = Object.keys(stock_[0]);
+                    let sale_l = Object.keys(sale_[0]);
+                    for (let i = 0; i < stock_l.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(stock_l[i]));
+                        opt.value = stock_l[i];
+                        stock_store_number.append(opt);
+                    }
+                    for (let i = 0; i < stock_l.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(stock_l[i]));
+                        opt.value = stock_l[i];
+                        stock_model.append(opt);
+                    }
+                    for (let i = 0; i < stock_l.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(stock_l[i]));
+                        opt.value = stock_l[i];
+                        stock_total.append(opt);
+                    }
+                    for (let i = 0; i < sale_l.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(sale_l[i]));
+                        opt.value = sale_l[i];
+                        sale_store_number.append(opt);
+                    }
+                    for (let i = 0; i < sale_l.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(sale_l[i]));
+                        opt.value = sale_l[i];
+                        sale_model.append(opt);
+                    }
+                    for (let i = 0; i < sale_l.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(sale_l[i]));
+                        opt.value = sale_l[i];
+                        sale_total.append(opt);
+                    }
+                }
+            }
+        })
+
+        function validate1(val) {
+            v1 = document.getElementById("fname");
+            v2 = document.getElementById("lname");
+
+
+            flag1 = true;
+            flag2 = true;
+            flag3 = true;
+            flag4 = true;
+
+            if (val >= 1 || val == 0) {
+                if (v1.value == "") {
+                    v1.style.borderColor = "red";
+                    flag1 = false;
+                } else {
+                    v1.style.borderColor = "green";
+                    flag1 = true;
+                }
+            }
+
+            if (val >= 2 || val == 0) {
+                if (v2.value == "") {
+                    v2.style.borderColor = "red";
+                    flag2 = false;
+                } else {
+                    v2.style.borderColor = "green";
+                    flag2 = true;
+                }
+            }
+
+
+            flag = flag1 && flag2
+
+            return flag;
+        }
+
+        function validate2(val) {
+            v1 = document.getElementById("fname");
+            v2 = document.getElementById("ST_model");
+
+
+            flag1 = true;
+            flag2 = true;
+            flag3 = true;
+            flag4 = true;
+
+            if (val >= 1 || val == 0) {
+                if (v1.value == "") {
+                    v1.style.borderColor = "red";
+                    flag1 = false;
+                } else {
+                    v1.style.borderColor = "green";
+                    flag1 = true;
+                }
+            }
+
+            if (val >= 2 || val == 0) {
+                if (v2.value == "") {
+                    v2.style.borderColor = "red";
+                    flag2 = false;
+                } else {
+                    v2.style.borderColor = "green";
+                    flag2 = true;
+                }
+            }
+            flag = flag1 && flag2
+
+            return flag;
+            /*if (val >= 3 || val == 0) {
+                if (v3.value == "") {
+                    v3.style.borderColor = "red";
+                    flag3 = false;
+                } else {
+                    v3.style.borderColor = "green";
+                    flag3 = true;
+                }
+            }
+
+            if (val >= 4 || val == 0) {
+                if (v4.value == "") {
+                    v4.style.borderColor = "red";
+                    flag4 = false;
+                } else {
+                    v4.style.borderColor = "green";
+                    flag4 = true;
+                }
+            }*/
+
+
+        }
+
+        $(document).ready(function() {
+
+            var current_fs, next_fs, previous_fs;
+
+            $(".next").click(function() {
+
+                str1 = "next1";
+                str2 = "next2";
+                str3 = "next3";
+
+                if (!str2.localeCompare($(this).attr('id')) && validate1(0) == true) {
+                    val2 = true;
+                } else {
+                    val2 = false;
+                }
+
+                if (!str3.localeCompare($(this).attr('id')) && validate2(0) == true) {
+                    val3 = true;
+                } else {
+                    val3 = false;
+                }
+                alert(!str3.localeCompare($(this).attr('id')) && val3 == true);
+                if (!str1.localeCompare($(this).attr('id')) || (!str2.localeCompare($(this).attr('id')) && val2 == true) || (!str3.localeCompare($(this).attr('id')) && val3 == true)) {
+                    current_fs = $(this).parent().parent();
+                    next_fs = $(this).parent().parent().next();
+
+                    $(current_fs).removeClass("show");
+                    $(next_fs).addClass("show");
+
+                    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+                    current_fs.animate({}, {
+                        step: function() {
+
+                            current_fs.css({
+                                'display': 'none',
+                                'position': 'relative'
+                            });
+
+                            next_fs.css({
+                                'display': 'block'
+                            });
+                        }
+                    });
+                }
+            });
+
+            $(".prev").click(function() {
+
+                current_fs = $(this).parent().parent();
+                previous_fs = $(this).parent().parent().prev();
+
+                $(current_fs).removeClass("show");
+                $(previous_fs).addClass("show");
+
+                $("#progressbar li").eq($("fieldset").index(next_fs)).removeClass("active");
+
+                current_fs.animate({}, {
+                    step: function() {
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+
+                        previous_fs.css({
+                            'display': 'block'
+                        });
+                    }
+                });
+            });
+
+            $('.radio-group .radio').click(function() {
+                $(this).toggleClass('selected');
+            });
+
+        });
+
+        
+        
+    </script>

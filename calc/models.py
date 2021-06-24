@@ -11,8 +11,8 @@ class Profile(models.Model):
     job_title  = models.CharField(max_length=100,blank=True,null=True)
     phone_number = models.CharField(max_length=10,blank=True,null=True)
     address = models.TextField(blank=True,null=True)
-def __str__(self):
-    return self.user.Username
+    def __str__(self):
+        return self.user1.username
 
 class LoggedInUser(models.Model):
     user = models.OneToOneField(User, related_name='logged_in_user',on_delete=models.CASCADE)
@@ -20,3 +20,5 @@ class LoggedInUser(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
